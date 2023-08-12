@@ -7,6 +7,7 @@
             <input type="email" name="email" value="<?php echo $email ?>" required>
             <input type="hidden" name="id" value="<?php echo $_GET['e'] ?>">
             <input class="btn btn-success" type="submit" name="save" value="save">
+            <a class="btn btn-warning" href="/">Cancel</a>
         </form>
     </div>
 <?php }?>
