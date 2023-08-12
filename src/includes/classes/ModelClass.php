@@ -36,7 +36,8 @@ abstract class Model implements CRUD {
     /**
      * Records will be created if passes as an array
      *
-     * Array values should be inorder as same when you define the columns
+     * Array values should be inorder as same as when you define the columns in the extended model
+     * The columns are predefined when the model get initiated
      *
      * @param array $records
      * @return void
@@ -92,7 +93,7 @@ abstract class Model implements CRUD {
         $conn = $this->db->conn();
         $stmt = $conn->prepare("SELECT * FROM {$this->table} ORDER BY id ASC");
         if ($stmt->execute()) {
-            $data = $stmt->fetchAll();
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         return $data;
@@ -132,6 +133,6 @@ abstract class Model implements CRUD {
     {
         $con =  $this->db->conn();
         $stmt= $con->query($query);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

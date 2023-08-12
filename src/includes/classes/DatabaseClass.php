@@ -2,6 +2,8 @@
 
 /**
  * Database connection made here
+ *
+ * @todo: move the connection string variables to a ENV file
  */
 class Database {
 

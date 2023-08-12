@@ -1,48 +1,46 @@
-<?php if(isset($_GET['e']) and $_GET['e']) {
-    $email = $processFile->getEmployee($_GET['e'],'email_address');
-    ?>
-    <div class="row justify-content-md-center">
-        <h6>Edit Employee email</h6>
-        <form name="edit_employee" action="index.php" method="post">
-            <input type="email" name="email" value="<?php echo $email ?>" required>
-            <input type="hidden" name="id" value="<?php echo $_GET['e'] ?>">
-            <input class="btn btn-success" type="submit" name="save" value="save">
-            <a class="btn btn-warning" href="/">Cancel</a>
-        </form>
-    </div>
-<?php }?>
+<div id="guest-list-app">
 
-<?php $allRecords = $processFile->getRecordsToDisplay() ?>
-<?php if($allRecords){ ?>
-    <table class="table table-stripe">
-        <?php $headers = $processFile->getColumns() ?>
-        <thead>
-        <th>Company name</th>
-        <th>Average salary</th>
-        <th>Name</th>
-        <th>Email address</th>
-        <th>Salary</th>
-        <th></th>
-        </thead>
-        <tbody>
-        <?php foreach ($allRecords as $record) { ?>
-            <?php foreach ($record['employees'] as $key=>$employee) { ?>
-                <tr>
-                    <?php
-                    if( $key ==0) { ?>
-                        <td rowspan="<?php echo $record['count'] ?>"><?php echo $record['company_name'] ?></td>
-                        <td rowspan="<?php echo $record['count'] ?>">$<?php echo $record['average_salary'] ?></td>
-                    <?php } ?>
-                    <td><?php echo $employee['employee'] ?></td>
-                    <td><?php echo $employee['email_address'] ?></td>
-                    <td>$<?php echo $employee['salary'] ?></td>
+    <div id="app">
+
+        <div class="alert alert-danger" role="alert" v-if="errorInEmail" >
+            {{ errorInEmail }}
+        </div>
+        <div class="row justify-content-md-center" v-if="showEdit && companies.length">
+            <h6>Edit Employee email</h6>
+            <div>
+                <div class="form-group mb-2 col-3">
+                    <input id="email" class="form-control" type="email" name="email" v-model="showEdit.email_address" required>
+                </div>
+                <input class="btn btn-success /m-1" type="submit" name="save" value="Save" @click="saveEmployee">
+                <a class="btn btn-warning / m-1" @click="showEdit=null;errorInEmail=false">Cancel</a>
+            </div>
+        </div>
+
+
+        <table class="table table-stripe" v-if="companies.length">
+            <thead>
+                <th>Company name</th>
+                <th>Average salary</th>
+                <th>Name</th>
+                <th>Email address</th>
+                <th>Salary</th>
+                <th></th>
+            </thead>
+            <tbody>
+            <template v-for="data,key in companies">
+                <tr v-for="employee, emKey in data.employees">
+
+                    <td v-if="emKey==0" :rowspan="data.count">{{ data.company_name }}</td>
+                    <td v-if="emKey==0" :rowspan="data.count">${{ data.average_salary }}</td>
+                    <td>{{ employee.employee }}</td>
+                    <td>{{ employee.email_address }}</td>
+                    <td>${{ employee.salary }}</td>
                     <td>
-                        <a class="btn btn-warning" href="?e=<?php echo $employee['id']?>">Edit</a>
+                        <button class="btn btn-warning" @click="editEmployee(employee)">Edit</button>
                     </td>
                 </tr>
-            <?php } ?>
-
-        <?php } ?>
-        </tbody>
-    </table>
-<?php } ?>
+            </template>
+            </tbody>
+        </table>
+    </div>
+</div>

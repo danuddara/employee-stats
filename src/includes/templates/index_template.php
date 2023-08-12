@@ -1,6 +1,7 @@
 <?php include_once('header.php')  ?>
 <body>
 <div class="container mt-5">
+    <h3 class="mb-2">Salary Checker</h3>
     <?php
     include_once('alert_message.php') ?>
     <div class="row justify-content-md-center">
