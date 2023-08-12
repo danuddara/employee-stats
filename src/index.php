@@ -1,23 +1,4 @@
 <?php
-require 'includes/ProcessFile.php';
-$processFile = new ProcessFile();
-$processFile->action();
-include_once('includes/templates/header.php') ?>
-
-<body>
-<div class="container mt-5">
-    <?php
-    include_once('includes/templates/alert_message.php') ?>
-    <div class="row justify-content-md-center">
-            <form class="form-inline" method="post" action="index.php" enctype="multipart/form-data">
-                <div class="form-group mb-2">
-                    <input type="file" class="form-control" name="csv_file" required>
-                </div>
-                <input class="btn btn-danger" type="submit" value="Upload" name="submit">
-            </form>
-    </div>
-    <?php
-    include_once('includes/templates/employee_records.php') ?>
-</div>
-</body>
-</html>
+require 'includes/ProcessFileController.php';
+$processFile = new ProcessFileController();
+$processFile->route();

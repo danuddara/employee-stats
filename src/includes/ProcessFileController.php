@@ -1,4 +1,7 @@
 <?php
+
+use JetBrains\PhpStorm\NoReturn;
+
 session_start();
 require_once ('classes/DatabaseClass.php');
 require_once ('classes/ModelClass.php');
@@ -8,7 +11,7 @@ require_once ('classes/Session.php');
 /**
  * The main controller for processing data
  */
-class ProcessFile
+class ProcessFileController
 {
     /**
      * @var string[]
@@ -51,6 +54,51 @@ class ProcessFile
         }
     }
 
+    /**
+     * Define routes to the controller
+     * @return void
+     */
+    public function route(): void
+    {
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri = explode('/', $uri);
+
+        switch ($uri[1]) {
+            case 'employees_list':
+                $this->employeeList();
+                break;
+            case 'update_employee':
+                $this->updateEmployee(true);
+                break;
+            default:
+                $this->defaultPage();
+                break;
+        }
+    }
+
+    /**
+     *
+     * Json response
+     * @return void
+     */
+    public function employeeList(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($this->employee->findAll());
+    }
+
+    /**
+     * Default page
+     * @return void
+     */
+    public function defaultPage(): void
+    {
+        $processFile = $this;
+        $processFile->action();
+        include_once('templates/index_template.php');
+    }
+
+
 
     /**
      * @throws Exception
@@ -79,19 +127,32 @@ class ProcessFile
         }
     }
 
-    public function updateEmployee(): void
+    #[NoReturn] public function pageNotFound(): void
+    {
+        http_response_code(404);
+        die();
+    }
+
+    #[NoReturn] public function updateEmployee(bool $jsonResponse=false): void
     {
         if (isset($_POST["save"]) && isset($_POST['email'])) {
             $email = $_POST['email'];
             $id = $_POST['id'];
             $updated = $this->employee->update(['email_address'=>$email],$id);
-            if ($updated){
-                $this->session->setFlashMessage('success','Successfully Updated the email',);
-            } else{
-                $this->session->setFlashMessage('warning','Sorry, something went wrong. Please try again');
+
+            if (!$jsonResponse) {
+                if ($updated) {
+                    $this->session->setFlashMessage('success', 'Successfully Updated the email',);
+                } else {
+                    $this->session->setFlashMessage('warning', 'Sorry, something went wrong. Please try again');
+                }
+                header('Location:../index.php');
             }
-            header('Location:../index.php');
+
+            echo json_encode(['success'=>$updated,'employee'=>($updated) ? $this->employee->findOne($id):[]]);
         }
+
+        $this->pageNotFound();
     }
 
 
