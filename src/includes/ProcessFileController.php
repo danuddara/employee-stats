@@ -1,7 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\NoReturn;
-
 session_start();
 require_once ('classes/DatabaseClass.php');
 require_once ('classes/ModelClass.php');
@@ -45,6 +43,9 @@ class ProcessFileController
 
     }
 
+    /**
+     * @throws Exception
+     */
     public function action(): void
     {
         if (isset($_POST['submit'])) {
@@ -84,7 +85,7 @@ class ProcessFileController
     public function employeeList(): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($this->employee->findAll());
+        echo json_encode($this->getRecordsToDisplay());
     }
 
     /**
@@ -127,17 +128,32 @@ class ProcessFileController
         }
     }
 
-    #[NoReturn] public function pageNotFound(): void
+    /**
+     * @return void
+     */
+    public function pageNotFound(): void
     {
         http_response_code(404);
         die();
     }
 
-    #[NoReturn] public function updateEmployee(bool $jsonResponse=false): void
+    /**
+     * @param bool $jsonResponse
+     * @return void
+     */
+    public function updateEmployee(bool $jsonResponse=false): void
     {
-        if (isset($_POST["save"]) && isset($_POST['email'])) {
-            $email = $_POST['email'];
-            $id = $_POST['id'];
+        $data = $_POST;
+
+        if ($jsonResponse) {
+            //prepare json request
+            $request_body = file_get_contents('php://input');
+            $data = json_decode($request_body, true);
+        }
+
+        if (isset($data["save"]) && isset($data['email']) && isset($data['id']) && $data['id']) {
+            $email = $data['email'];
+            $id = $data['id'];
             $updated = $this->employee->update(['email_address'=>$email],$id);
 
             if (!$jsonResponse) {
@@ -156,6 +172,11 @@ class ProcessFileController
     }
 
 
+    /**
+     * Extract data from a csv file.
+     * @param $filePath
+     * @return array
+     */
     protected function extractData($filePath): array
     {
         $array =[];
@@ -186,6 +207,11 @@ class ProcessFileController
         return $this->employee->getAverageSalaryByCompany();
     }
 
+    /**
+     * Prepare the list of records
+     *
+     * @return array
+     */
     public function getRecordsToDisplay(): array
     {
         $averageSalary = $this->getAverageSalaryRecords();
@@ -193,10 +219,10 @@ class ProcessFileController
         $data = [];
         foreach ($averageSalary as $company){
 
-               $employees = array_filter($employeeRecords,function ($employeeRecord) use ($company) {
+               $employees = array_values(array_filter($employeeRecords,function ($employeeRecord) use ($company) {
                    return $employeeRecord['company_name'] === $company['company_name'];
-               });
-               $data[] = array_merge($company,['employees'=>array_values($employees),'count'=>count($employees)]);
+               }));
+               $data[] = array_merge($company,['employees'=>$employees,'count'=>count($employees)]);
         }
 
         return $data;
