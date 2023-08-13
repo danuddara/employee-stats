@@ -23,6 +23,7 @@ export default {
         {
             this.errorInEmail = false
             this.showEdit = employee;
+            this.showEdit.temp_email_address = employee.email_address;
             this.scrollToTop()
         },
         scrollToTop() {
@@ -49,6 +50,13 @@ export default {
             } else {
                 this.errorInEmail = false
             }
+        },
+        resetEmployee() {
+            if (this.showEdit.temp_email_address) {
+                this.showEdit.email_address = this.showEdit.temp_email_address
+            }
+            this.showEdit=null;
+            this.errorInEmail=false
         },
         checkIfValidEmail(email)
         {

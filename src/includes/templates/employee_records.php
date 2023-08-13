@@ -12,7 +12,7 @@
                     <input id="email" class="form-control" type="email" name="email" v-model="showEdit.email_address" required>
                 </div>
                 <input class="btn btn-success /m-1" type="submit" name="save" value="Save" @click="saveEmployee">
-                <a class="btn btn-warning / m-1" @click="showEdit=null;errorInEmail=false">Cancel</a>
+                <a class="btn btn-warning / m-1" @click="resetEmployee">Cancel</a>
             </div>
         </div>
 
