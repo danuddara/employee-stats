@@ -1,6 +1,6 @@
 <div id="guest-list-app">
 
-    <div id="app">
+    <div id="app" class="d-none">
 
         <div class="alert alert-danger" role="alert" v-if="errorInEmail" >
             {{ errorInEmail }}
@@ -43,4 +43,5 @@
             </tbody>
         </table>
     </div>
+    <div id="loader">Loading..</div>
 </div>

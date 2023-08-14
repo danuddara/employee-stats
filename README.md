@@ -34,10 +34,11 @@ The inital database query is set in `dbscript` folder. That will create the tabl
  It is possible to make loads of improvements to this application based on unlimited time. 
 
  - Create autoloader for classes so we can ignore including the classes in `classes` folder
- - Create a new endpoint with more routing capabilies so we can have much more controll over some new features that may come up
- - Load assests (CSS and JS) into the application rather than using CDN paths so we can have a bit more reliable application
+ - Create a new endpoint with more routing capabilies so we can have much more control over some new features that may come up
+ - Load assets (CSS and JS) into the application rather than using CDN paths so we can have a bit more reliable application
  - When initiating the entity , we can move the columns been defined in to a method rather than from the constructor.
- - Create a Absrtact Contoller for common methods
+ - Create an Abstract Controller for common methods
+ - Move configs in to an ENV file
  
 
 # More info 
